@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin: Maintenance Jobs</h2>
+
+<div class="card">
+    <table>
+        <tr>
+    <th>ID</th>
+    <th>Panel</th>
+    <th>Customer</th>
+    <th>Date</th>
+    <th>Type</th>
+    <th>Technician</th>
+    <th>Status</th>
+    <th>Cost</th>
+    <th>Proof</th>
+    <th>Action</th>
+    
+</tr>
+        {% for m in jobs %}
+<tr>
+    <td>{{ m.maintenance_id }}</td>
+    <td>{{ m.model_name }}</td>
+    <td>{{ m.customer_id or '-' }}</td>
+    <td>{{ m.service_date }}</td>
+    <td>{{ m.service_type }}</td>
+    <td>{{ m.tech_name or 'Unassigned' }}</td>
+    <td>{{ m.maintenance_status }}</td>
+    <td>{{ m.cost_of_service }}</td>
+
+    <!-- PROOF column -->
+    <td>
+        {% if m.completion_image %}
+            <a href="{{ url_for('static', filename=m.completion_image) }}" target="_blank">
+                View Photo
+            </a>
+        {% else %}
+            <span>-</span>
+        {% endif %}
+    </td>
+
+    <!-- ACTION column -->
+    <td>
+        {% if m.maintenance_status != 'Completed' and not m.technician_id %}
+            {# No technician yet -> show Assign Technician button #}
+            <a href="{{ url_for('admin_assign_maintenance', maintenance_id=m.maintenance_id) }}"
+               class="btn btn-sm">
+                Assign Technician
+            </a>
+
+        {% elif m.maintenance_status != 'Completed' and m.technician_id %}
+            {# Technician already assigned, waiting for them to complete #}
+            <span>Assigned</span>
+
+        {% elif m.maintenance_status == 'Completed' and m.billing_status == 'NotBilled' %}
+            {# Completed but not billed yet -> Generate Invoice #}
+            <form method="POST"
+                  action="{{ url_for('admin_generate_maintenance_invoice', maintenance_id=m.maintenance_id) }}"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-green btn-sm">
+                    Generate Invoice
+                </button>
+            </form>
+
+        {% elif m.maintenance_status == 'Completed' and m.billing_status == 'Invoiced' %}
+            {# Invoice created, waiting for payment #}
+            <span>Awaiting Payment</span>
+
+        {% elif m.maintenance_status == 'Completed' and m.billing_status == 'Paid' %}
+            {# Invoice fully paid #}
+            <span>Paid</span>
+
+        {% else %}
+            <span>-</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+    </table>
+</div>
+{% endblock %}

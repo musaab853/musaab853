@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Assign Installation</h2>
+
+    <p>
+        <strong>Customer:</strong> {{ sale.customer_name }} <br>
+        <strong>Panel:</strong> {{ sale.model_name }} <br>
+        <strong>Sale ID:</strong> {{ sale.sale_id }}
+    </p>
+
+    <form method="post">
+
+        <div class="form-group">
+            <label>Installation Date</label>
+            <input type="date" name="service_date" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Assign Technician</label>
+            <select name="technician_id" class="form-control">
+                <option value="">-- Assign Later --</option>
+                {% for t in technicians %}
+                <option value="{{ t.employee_id }}">
+                    {{ t.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Installation Cost</label>
+            <input type="number" name="cost_of_service" step="0.01"
+                   required class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Assign Installation
+        </button>
+
+        <a href="{{ url_for('admin_sales') }}" class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+</div>
+
+{% endblock %}

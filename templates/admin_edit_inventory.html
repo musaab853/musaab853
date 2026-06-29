@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 500px; margin: 40px auto;">
+    <div class="card">
+        <h2 style="border: none; margin-bottom: 24px;">Edit Inventory – {{ item.model_name }}</h2>
+
+        <form method="POST">
+            <label>Stock Quantity</label>
+            <input type="number" name="stock_quantity" value="{{ item.stock_quantity }}" required>
+
+            <label>Supplier Information</label>
+            <input type="text" name="supplier_info" value="{{ item.supplier_info }}">
+
+            <label>Cost per Unit (₹)</label>
+            <input type="number" step="0.01" name="cost_per_unit" value="{{ item.cost_per_unit }}" required>
+
+            <label>Reorder Level</label>
+            <input type="number" name="reorder_level" value="{{ item.reorder_level }}">
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-secondary" style="flex: 1;">Save Changes</button>
+                <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

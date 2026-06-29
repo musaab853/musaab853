@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>Manage Rentals</h2>
+    <a href="{{ url_for('admin_add_rental') }}" class="btn">Create Rental</a>
+</div>
+<div class="card">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Panel</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Monthly Fee</th>
+            <th>Payment Status</th>
+            <th>Action</th>
+        </tr>
+
+        {% for r in rentals %}
+        <tr>
+            <td>{{ r.rental_id }}</td>
+            <td>{{ r.cname }}</td>
+            <td>{{ r.model_name }}</td>
+            <td>{{ r.start_date or '-' }}</td>
+            <td>{{ r.end_date or '-' }}</td>
+            <td>{{ r.monthly_rental_fee or '-' }}</td>
+            <td>{{ r.payment_status }}</td>
+
+                        <!-- ACTION column -->
+            <td>
+    {# 1) If monthly fee not set yet -> only Configure #}
+    {% if r.monthly_rental_fee is none %}
+        <a href="{{ url_for('admin_configure_rental', rental_id=r.rental_id) }}"
+           class="btn btn-sm">
+            Configure
+        </a>
+
+    {# 2) If billed this month, show status text instead of button #}
+    {% elif r.billed_this_month > 0 %}
+        <span style="color: green; font-weight: bold;">✓ Invoiced (This Month)</span>
+
+    {# 3) If not billed this month, show Generate Monthly Invoice #}
+    {% else %}
+        <form method="POST"
+              action="{{ url_for('admin_generate_rental_invoice', rental_id=r.rental_id) }}"
+              style="display:inline;">
+            <button type="submit" class="btn btn-green btn-sm">
+                Generate Monthly Invoice
+            </button>
+        </form>
+    {% endif %}
+</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

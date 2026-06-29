@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Manage Panel – {{ item.model_name }}</h2>
+
+  {% if item.image_path %}
+    <img src="{{ url_for('static', filename=item.image_path) }}"
+         alt="{{ item.model_name }}"
+         style="max-width:320px; width:100%; border-radius:10px; margin-bottom:15px;">
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    <h3>Panel Details</h3>
+
+    <label>Model Name</label>
+    <input type="text" name="model_name" value="{{ item.model_name }}" required>
+
+    <label>Type</label>
+    <input type="text" name="type" value="{{ item.type or '' }}">
+
+    <label>Capacity (kW)</label>
+    <input type="number" step="0.01" name="capacity_kw" value="{{ item.capacity_kw or '' }}">
+
+    <label>Price (₹)</label>
+    <input type="number" step="0.01" name="price" value="{{ item.price or '' }}">
+
+    <label>Warranty Info</label>
+    <input type="text" name="warranty_info" value="{{ item.warranty_info or '' }}">
+
+    <label>Status</label>
+    <select name="status">
+      {% for s in ['Available','Installed','Maintenance','Retired'] %}
+        <option value="{{ s }}" {% if item.status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Update Image (optional)</label>
+    <input type="file" name="panel_image" accept="image/*">
+
+    <hr style="margin:20px 0;">
+
+    <h3>Inventory Details</h3>
+
+    <label>Stock Quantity</label>
+    <input type="number" name="stock_quantity" value="{{ item.stock_quantity }}" required>
+
+    <label>Supplier Info</label>
+    <input type="text" name="supplier_info" value="{{ item.supplier_info }}">
+
+    <label>Cost per Unit</label>
+    <input type="number" step="0.01" name="cost_per_unit" value="{{ item.cost_per_unit }}" required>
+
+    <label>Reorder Level</label>
+    <input type="number" name="reorder_level" value="{{ item.reorder_level }}">
+
+    <button type="submit" class="btn">Save Changes</button>
+    <a href="{{ url_for('admin_inventory') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

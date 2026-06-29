@@ -1,0 +1,110 @@
+CREATE DATABASE solar_company;
+CREATE USER 'solar_user'@'localhost' IDENTIFIED BY 'StrongPassword123!';
+GRANT ALL PRIVILEGES ON solar_company.* TO 'solar_user'@'localhost';
+FLUSH PRIVILEGES;
+
+USE solar_company;
+
+-- 1. Customer
+CREATE TABLE Customer (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
+    billing_preferences VARCHAR(100),
+    service_start_date DATE,
+    rental_ownership_status ENUM('Rental', 'Owned') DEFAULT 'Rental',
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. SolarPanel
+CREATE TABLE SolarPanel (
+    panel_id INT AUTO_INCREMENT PRIMARY KEY,
+    model_name VARCHAR(100) NOT NULL,
+    type VARCHAR(50),
+    capacity_kw DECIMAL(10,2),
+    price DECIMAL(10,2),
+    warranty_info VARCHAR(255),
+    installation_date DATE,
+    status ENUM('Available','Installed','Maintenance','Retired') DEFAULT 'Available'
+);
+
+-- 3. RentalAgreement
+CREATE TABLE RentalAgreement (
+    rental_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    panel_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    monthly_rental_fee DECIMAL(10,2),
+    payment_status ENUM('Pending','Paid','Overdue') DEFAULT 'Pending',
+    renewal_option BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (panel_id) REFERENCES SolarPanel(panel_id)
+);
+
+-- 4. SalesTransaction
+CREATE TABLE SalesTransaction (
+    sale_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    panel_id INT NOT NULL,
+    sale_date DATE NOT NULL,
+    total_price DECIMAL(10,2),
+    payment_status ENUM('Pending','Paid','Cancelled') DEFAULT 'Pending',
+    invoice_number VARCHAR(50) UNIQUE,
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY (panel_id) REFERENCES SolarPanel(panel_id)
+);
+
+-- 5. Employee (Technician & Admin)
+CREATE TABLE Employee (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    role ENUM('Technician','Admin','Sales','Support') DEFAULT 'Technician',
+    phone VARCHAR(20),
+    salary DECIMAL(10,2),
+    work_schedule VARCHAR(255),
+    password_hash VARCHAR(255) NOT NULL
+);
+
+-- 6. MaintenanceService
+CREATE TABLE MaintenanceService (
+    maintenance_id INT AUTO_INCREMENT PRIMARY KEY,
+    panel_id INT NOT NULL,
+    customer_id INT NULL,
+    service_date DATE NOT NULL,
+    service_type VARCHAR(100),
+    maintenance_status ENUM('Scheduled','In Progress','Completed','Cancelled') DEFAULT 'Scheduled',
+    technician_id INT,
+    cost_of_service DECIMAL(10,2),
+    FOREIGN KEY (panel_id) REFERENCES SolarPanel(panel_id),
+    FOREIGN KEY (technician_id) REFERENCES Employee(employee_id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+-- 7. Payment
+CREATE TABLE Payment (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    amount_paid DECIMAL(10,2) NOT NULL,
+    payment_date DATETIME NOT NULL,
+    payment_method ENUM('Credit Card','Bank Transfer','Cash','UPI') NOT NULL,
+    payment_type ENUM('Rental','Sale','Maintenance') NOT NULL,
+    payment_status ENUM('Pending','Completed','Failed','Refunded') DEFAULT 'Completed',
+    reference_id VARCHAR(50),
+    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+-- 8. Inventory
+CREATE TABLE Inventory (
+    inventory_id INT AUTO_INCREMENT PRIMARY KEY,
+    panel_id INT NOT NULL,
+    stock_quantity INT NOT NULL,
+    supplier_info VARCHAR(255),
+    cost_per_unit DECIMAL(10,2),
+    reorder_level INT,
+    FOREIGN KEY (panel_id) REFERENCES SolarPanel(panel_id)
+);

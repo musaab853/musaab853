@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 500px; margin: 40px auto;">
+    <div class="card">
+        <h2 style="border: none; margin-bottom: 24px;">Add New Technician</h2>
+        
+        <form method="POST">
+            <label>Full Name</label>
+            <input type="text" name="name" required placeholder="John Smith">
+
+            <label>Email Address</label>
+            <input type="email" name="email" required placeholder="john@solar.com">
+
+            <label>Phone Number</label>
+            <input type="text" name="phone" placeholder="+91 98765 43210">
+
+            <label>Salary (₹)</label>
+            <input type="number" step="0.01" name="salary" placeholder="45000">
+
+            <label>Work Schedule</label>
+            <input type="text" name="work_schedule" placeholder="e.g., Mon–Fri 9–5">
+
+            <label>Login Password</label>
+            <input type="password" name="password" required placeholder="Create a strong password">
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-secondary" style="flex: 1;">Add Technician</button>
+                <a href="{{ url_for('admin_employees') }}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

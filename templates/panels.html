@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Our Solar Panels</h2>
+<p style="color: var(--text-muted); margin-bottom: 30px;">Choose from our selection of high-performance solar panels for residential and commercial use.</p>
+
+<div class="panel-grid">
+    {% for p in panels %}
+    <div class="panel-card">
+        <div style="height: 220px; overflow: hidden; background-color: var(--border-color);">
+            {% if p.image_path %}
+                <img src="{{ url_for('static', filename=p.image_path) }}" 
+                     alt="{{ p.model_name }}" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 14px;">
+                    Solar Panel Image
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3>{{ p.model_name }}</h3>
+            <div style="margin-bottom: 12px;">
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <span style="color: var(--text-main); font-weight: 600;">{{ p.type }}</span> • 
+                    <span>{{ p.capacity_kw }} kW</span>
+                </p>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    Status: <span style="color: var(--secondary); font-weight: 600;">{{ p.status }}</span>
+                </p>
+            </div>
+
+            <p class="panel-price">₹{{ "{:,.0f}".format(p.price) }}</p>
+
+            {% if session.customer_id %}
+                <div style="display: flex; gap: 8px;">
+                    <a href="{{ url_for('customer_rent_panel', panel_id=p.panel_id) }}" class="btn" style="flex: 1; text-align: center; font-size: 13px;">Rent</a>
+                    <a href="{{ url_for('customer_buy_panel', panel_id=p.panel_id) }}" class="btn btn-secondary" style="flex: 1; text-align: center; font-size: 13px;">Buy</a>
+                </div>
+            {% else %}
+                <a href="{{ url_for('customer_login') }}" class="btn" style="width: 100%; text-align: center;">Sign In to Order</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

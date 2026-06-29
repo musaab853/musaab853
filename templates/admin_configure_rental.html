@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Configure Rental #{{ rental.rental_id }}</h2>
+
+    <p>
+        <strong>Customer:</strong> {{ rental.customer_name }}<br>
+        <strong>Panel:</strong> {{ rental.model_name }} ({{ rental.capacity_kw }} kW)
+    </p>
+
+    <form method="POST">
+        <label>Start Date</label>
+        <input type="date" name="start_date"
+               value="{{ rental.start_date }}" required>
+
+        <label>End Date (optional)</label>
+        <input type="date" name="end_date"
+               value="{{ rental.end_date or '' }}">
+
+        <label>Monthly Rental Fee</label>
+        <input type="number" step="0.01" name="monthly_rental_fee"
+               value="{{ rental.monthly_rental_fee or '' }}" required>
+
+        <label>Assign Technician (Installation Team)</label>
+        <select name="technician_id">
+            <option value="">Unassigned</option>
+            {% for t in technicians %}
+                <option value="{{ t.employee_id }}">
+                    {{ t.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn" style="margin-top: 10px;">
+            Save Rental Terms
+        </button>
+        <a href="{{ url_for('admin_rentals') }}" class="btn btn-secondary" style="margin-top: 10px;">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 500px; margin: 40px auto;">
+    <div class="card">
+        <h2 style="border: none; margin-bottom: 24px;">Add Inventory</h2>
+        
+        <form method="POST">
+            <label>Solar Panel</label>
+            <select name="panel_id" required>
+                <option value="">-- Select a panel --</option>
+                {% for p in panels %}
+                    <option value="{{ p.panel_id }}">{{ p.model_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Stock Quantity</label>
+            <input type="number" name="stock_quantity" required placeholder="e.g., 50">
+
+            <label>Supplier Information</label>
+            <input type="text" name="supplier_info" placeholder="e.g., ABC Solar Distributors">
+
+            <label>Cost per Unit (₹)</label>
+            <input type="number" step="0.01" name="cost_per_unit" required placeholder="e.g., 12000">
+
+            <label>Reorder Level</label>
+            <input type="number" name="reorder_level" placeholder="e.g., 10">
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-secondary" style="flex: 1;">Add Inventory</button>
+                <a href="{{ url_for('admin_inventory') }}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

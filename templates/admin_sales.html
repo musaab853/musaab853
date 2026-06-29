@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>Manage Sales</h2>
+    <a href="{{ url_for('admin_add_sale') }}" class="btn">Create Sale</a>
+</div>
+
+<div class="card">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Panel</th>
+            <th>Date</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Invoice</th>
+             <th>Proof</th>
+            <th>Action</th>
+        </tr>
+
+        {% for s in sales %}
+<tr>
+    <td>{{ s.sale_id }}</td>
+    <td>{{ s.cname }}</td>
+    <td>{{ s.model_name }}</td>
+    <td>{{ s.sale_date }}</td>
+    <td>{{ s.total_price }}</td>
+    <td>{{ s.payment_status }}</td>
+
+    <!-- Invoice column -->
+    <td>{{ s.invoice_number or '-' }}</td>
+
+    <!-- Proof column -->
+    <td>
+        {% if s.proof_image %}
+            <a href="{{ url_for('static', filename=s.proof_image) }}" target="_blank">
+                View Photo
+            </a>
+        {% else %}
+            <span>-</span>
+        {% endif %}
+    </td>
+
+    <!-- Action column -->
+    <td>
+        {% if s.payment_status == 'Requested' %}
+            <!-- Admin first assigns installation for this BUY order -->
+            <a href="{{ url_for('admin_assign_installation', sale_id=s.sale_id) }}"
+               class="btn btn-sm btn-primary" style="margin-bottom:6px;">
+                Assign Installation
+            </a>
+
+            <!-- (Optional) admin can also generate invoice directly -->
+            <form method="POST"
+                  action="{{ url_for('admin_generate_invoice', sale_id=s.sale_id) }}"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-sm">
+                    Generate Invoice
+                </button>
+            </form>
+
+        {% elif s.payment_status == 'Pending' %}
+            <!-- Invoice generated; waiting for payment -->
+            <form method="POST"
+                  action="{{ url_for('admin_mark_sale_paid', sale_id=s.sale_id) }}"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-green btn-sm">
+                    Mark Paid
+                </button>
+            </form>
+
+        {% elif s.payment_status == 'Paid' %}
+            <span>Paid</span>
+
+        {% else %}
+            <span>-</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+    </table>
+</div>
+{% endblock %}

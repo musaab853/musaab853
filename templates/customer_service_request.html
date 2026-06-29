@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <a href="{{ url_for('customer_service_request') }}" class="btn">Request Service</a>
+    <h2>Request Maintenance / Service</h2>
+    <form method="POST">
+        <label>Panel</label>
+        <select name="panel_id" required>
+            {% for p in panels %}
+                <option value="{{ p.panel_id }}">{{ p.model_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Preferred Service Date</label>
+        <input type="date" name="service_date" required>
+
+        <label>Service Type</label>
+        <input type="text" name="service_type" placeholder="e.g. Cleaning, Inspection" required>
+
+        <label>Description (optional)</label>
+        <textarea name="description"></textarea>
+
+        <button type="submit" class="btn">Submit Request</button>
+    </form>
+</div>
+{% endblock %}

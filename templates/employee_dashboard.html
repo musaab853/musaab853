@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Employee Dashboard: {{ session.employee_name }} ({{ role }})</h2>
+
+{% if role == 'Admin' %}
+<div class="card">
+    <h3>Admin Controls</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px;">
+        <a href="{{ url_for('admin_panels') }}" class="btn">Manage Panels</a>
+        <a href="{{ url_for('admin_rentals') }}" class="btn">Manage Rentals</a>
+        <a href="{{ url_for('admin_sales') }}" class="btn">Manage Sales</a>
+        <a href="{{ url_for('admin_maintenance') }}" class="btn">Manage Maintenance</a>
+        <a href="{{ url_for('admin_inventory') }}" class="btn">Manage Inventory</a>
+        <a href="{{ url_for('admin_payments') }}" class="btn">Manage Payments</a>
+        <a href="{{ url_for('admin_customers_page') }}" class="btn">View Customers</a>
+        <a href="{{ url_for('admin_employees') }}" class="btn">Employee List</a>
+    </div>
+</div>
+
+<!-- --- NEW STATISTICS SECTION (Added Here) --- -->
+<div class="stats-row">
+    <div class="card stat-card border-green">
+        <h3>Total Revenue</h3>
+        <p>₹{{ revenue }}</p>
+    </div>
+    <div class="card stat-card border-orange">
+        <h3>Pending Sales</h3>
+        <p>{{ pending_sales }}</p>
+    </div>
+    <div class="card stat-card border-blue">
+        <h3>Open Jobs</h3>
+        <p>{{ open_jobs }}</p>
+    </div>
+</div>
+<!-- ------------------------------------------- -->
+
+<div class="card">
+    <h3>New Sales Requests (Customer Orders - Buy)</h3>
+    {% if sales_requests %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Panel</th>
+            <th>Date</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+        {% for s in sales_requests %}
+        <tr>
+            <td>{{ s.sale_id }}</td>
+            <td>{{ s.customer_name }}</td>
+            <td>{{ s.model_name }}</td>
+            <td>{{ s.sale_date }}</td>
+            <td>{{ s.total_price }}</td>
+            <td>{{ s.payment_status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('admin_sales') }}">Go to Sales Management</a></p>
+    {% else %}
+    <p>No new sales requests.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Rental Requests (New Installations - Rent)</h3>
+    {% if rental_requests %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Panel</th>
+            <th>Start Date</th>
+            <th>Monthly Fee</th>
+            <th>Status</th>
+        </tr>
+        {% for r in rental_requests %}
+        <tr>
+            <td>{{ r.rental_id }}</td>
+            <td>{{ r.customer_name }}</td>
+            <td>{{ r.model_name }}</td>
+            <td>{{ r.start_date }}</td>
+            <td>{{ r.monthly_rental_fee }}</td>
+            <td>{{ r.payment_status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('admin_rentals') }}">Go to Rentals Management</a></p>
+    {% else %}
+    <p>No rental requests.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Service / Maintenance Requests</h3>
+    {% if service_requests %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Panel</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+        {% for m in service_requests %}
+        <tr>
+            <td>{{ m.maintenance_id }}</td>
+            <td>{{ m.customer_name or '-' }}</td>
+            <td>{{ m.model_name }}</td>
+            <td>{{ m.service_date }}</td>
+            <td>{{ m.service_type }}</td>
+            <td>{{ m.maintenance_status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('admin_maintenance') }}">Go to Maintenance Management</a></p>
+    {% else %}
+    <p>No service requests.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+    <h3>
+        {% if role == 'Technician' %}
+            My Assigned Jobs
+        {% else %}
+            Maintenance Jobs Overview
+        {% endif %}
+    </h3>
+    {% if jobs %}
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Panel</th>
+            {% if role == 'Technician' %}<th>Customer Details</th>{% endif %}
+            <th>Status</th>
+            {% if role == 'Technician' %}<th>Action</th>{% endif %}
+        </tr>
+        {% for j in jobs %}
+        <tr>
+            <td>{{ j.service_date }}</td>
+            <td>{{ j.service_type }}</td>
+            <td>{{ j.model_name }}</td>
+            {% if role == 'Technician' %}
+                <td>{{ j.customer_name }}<br><small>{{ j.address }}</small></td>
+            {% endif %}
+            <td>{{ j.maintenance_status }}</td>
+            {% if role == 'Technician' %}
+            <td>
+                <a href="{{ url_for('complete_job', maintenance_id=j.maintenance_id) }}"
+   class="btn btn-green" style="padding: 5px 10px; font-size: 12px;">
+    Complete Job
+</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No active maintenance jobs.</p>
+    {% endif %}
+</div>
+{% endblock %}

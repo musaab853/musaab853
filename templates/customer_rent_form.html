@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 500px; margin: 40px auto;">
+    <div class="card">
+        <h2 style="border: none; margin-bottom: 24px;">Rent Solar Panel</h2>
+        
+        <div style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid var(--secondary); padding: 16px; border-radius: var(--radius-md); margin-bottom: 24px;">
+            <p style="margin: 6px 0; font-size: 14px; color: var(--text-main);">
+                <strong>Model:</strong> {{ panel.model_name }}
+            </p>
+            <p style="margin: 6px 0; font-size: 14px; color: var(--text-main);">
+                <strong>Capacity:</strong> {{ panel.capacity_kw }} kW
+            </p>
+            <p style="margin: 0; font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                Admin will review and schedule installation
+            </p>
+        </div>
+
+        <form method="POST">
+            <button type="submit" class="btn btn-secondary" style="width: 100%; margin-bottom: 12px;">Submit Rental Request</button>
+            <a href="{{ url_for('panels') }}" class="btn btn-outline" style="width: 100%;">Cancel</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

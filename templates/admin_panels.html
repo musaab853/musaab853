@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; border: none; padding: 0;">Manage Panels Inventory</h2>
+        <a href="{{ url_for('admin_add_panel') }}" class="btn" style="padding: 10px 20px; font-size: 14px;">➕ Add Panel</a>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Model</th>
+            <th>Capacity</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Action</th>   <!-- NEW -->
+        </tr>
+
+        {% for p in panels %}
+        <tr>
+            <td>{{ p.panel_id }}</td>
+            <td>{{ p.model_name }}</td>
+            <td>{{ p.capacity_kw }}</td>
+            <td>{{ p.price }}</td>
+            <td>{{ p.status }}</td>
+            <td>
+                <!-- NEW EDIT BUTTON -->
+                <a href="{{ url_for('admin_edit_panel', panel_id=p.panel_id) }}"
+                   class="btn btn-sm">
+                    Edit
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

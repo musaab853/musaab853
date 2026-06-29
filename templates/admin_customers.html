@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Customers</h2>
+<a href="{{ url_for('admin_customers_page') }}">View Customers</a>
+<div class="card">
+    <table>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>
+        {% for c in customers %}
+        <tr>
+            <td>{{ c.customer_id }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.phone }}</td>
+            <td>{{ c.rental_ownership_status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

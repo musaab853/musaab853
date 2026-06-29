@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Assign Technician – Job #{{ job.maintenance_id }}</h2>
+
+    <p>
+        <strong>Customer:</strong> {{ job.customer_name or '-' }}<br>
+        <strong>Panel:</strong> {{ job.model_name }}<br>
+        <strong>Type:</strong> {{ job.service_type }}<br>
+        <strong>Current Status:</strong> {{ job.maintenance_status }}<br>
+        <strong>Current Cost:</strong> {{ job.cost_of_service }}
+    </p>
+
+    <form method="POST">
+        <label>Service Date</label>
+        <input type="date" name="service_date"
+               value="{{ job.service_date }}" required>
+
+        <label>Technician</label>
+        <select name="technician_id">
+            <option value="">Unassigned</option>
+            {% for t in technicians %}
+                <option value="{{ t.employee_id }}"
+                        {% if job.technician_id == t.employee_id %}selected{% endif %}>
+                    {{ t.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Cost of Service</label>
+        <input type="number" step="0.01"
+               name="cost_of_service"
+               value="{{ job.cost_of_service }}" required>
+
+        <button type="submit" class="btn btn-green" style="margin-top: 10px;">
+            Save
+        </button>
+        <a href="{{ url_for('admin_maintenance') }}"
+           class="btn btn-secondary" style="margin-top: 10px;">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

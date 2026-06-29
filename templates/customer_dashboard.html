@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Dashboard</h2>
+<p style="color: var(--text-muted); margin-bottom: 30px;">Welcome back, {{ session.customer_name }}. Here's an overview of your account.</p>
+
+<!-- Quick Stats -->
+<div class="stats-row">
+    <div class="stat-card border-green">
+        <h3>{{ rentals|length }}</h3>
+        <p>Active Rentals</p>
+        <small>Paying monthly</small>
+    </div>
+    <div class="stat-card border-orange">
+        <h3>{{ sales|length }}</h3>
+        <p>Purchases</p>
+        <small>Owned panels</small>
+    </div>
+    <div class="stat-card border-blue">
+        <h3>{{ maintenance|length }}</h3>
+        <p>Maintenance</p>
+        <small>Service records</small>
+    </div>
+</div>
+
+<!-- Active Rentals -->
+<div class="card">
+    <h3>Active Rentals</h3>
+    {% if rentals %}
+        <div class="panel-grid">
+        {% for r in rentals %}
+            <div class="card stat-card border-green" style="text-align: left;">
+                <h4 style="margin: 0 0 12px;">{{ r.model_name }}</h4>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Capacity:</strong> {{ r.capacity_kw }} kW
+                </p>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Started:</strong> {{ r.start_date }}
+                </p>
+                <p style="margin: 12px 0; font-size: 13px;">
+                    <strong>Status:</strong> 
+                    <span style="{% if r.payment_status == 'Paid' %}color: var(--success){% else %}color: var(--warning){% endif %}; font-weight: 600;">
+                        {{ r.payment_status }}
+                    </span>
+                </p>
+                {% if r.payment_status != 'Paid' %}
+                    <a href="{{ url_for('customer_rental_pay', rental_id=r.rental_id) }}" class="btn btn-secondary" style="width: 100%; font-size: 12px;">
+                        Pay Now
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">No active rentals yet. <a href="{{ url_for('panels') }}">Browse panels</a></p>
+    {% endif %}
+</div>
+
+<!-- Purchases -->
+<div class="card">
+    <h3>Your Purchases</h3>
+    {% if sales %}
+        <div class="panel-grid">
+        {% for s in sales %}
+            <div class="card stat-card border-orange" style="text-align: left;">
+                <h4 style="margin: 0 0 12px;">{{ s.model_name }}</h4>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Purchase Date:</strong> {{ s.sale_date }}
+                </p>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Invoice:</strong> {{ s.invoice_number or 'Pending' }}
+                </p>
+                <p style="margin: 12px 0; font-size: 13px;">
+                    <strong>Status:</strong> 
+                    <span style="color: {% if s.payment_status == 'Paid' %}var(--success){% else %}var(--warning){% endif %}; font-weight: 600;">
+                        {{ s.payment_status }}
+                    </span>
+                </p>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">No purchases yet. <a href="{{ url_for('panels') }}">Buy now</a></p>
+    {% endif %}
+</div>
+
+<!-- Maintenance History -->
+<div class="card">
+    <h3>Maintenance History</h3>
+    {% if maintenance %}
+        <div class="panel-grid">
+        {% for m in maintenance %}
+            <div class="card stat-card border-blue" style="text-align: left;">
+                <h4 style="margin: 0 0 12px;">{{ m.service_type }}</h4>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Panel:</strong> {{ m.model_name }}
+                </p>
+                <p style="margin: 6px 0; font-size: 13px; color: var(--text-muted);">
+                    <strong>Date:</strong> {{ m.service_date }}
+                </p>
+                <p style="margin: 12px 0; font-size: 13px;">
+                    <strong>Status:</strong> 
+                    <span style="color: {% if m.maintenance_status == 'Completed' %}var(--success){% else %}var(--warning){% endif %}; font-weight: 600;">
+                        {{ m.maintenance_status }}
+                    </span>
+                </p>
+                {% if m.completion_image %}
+                    <a href="{{ url_for('static', filename=m.completion_image) }}" target="_blank" class="btn btn-secondary" style="width: 100%; font-size: 12px;">
+                        📷 View Proof
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">No maintenance records yet.</p>
+    {% endif %}
+</div>
+
+<!-- Payment History -->
+<div class="card">
+    <h3>Payment History</h3>
+    {% if payments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td style="font-size: 13px;">{{ p.payment_date }}</td>
+                    <td style="font-size: 13px;">{{ p.payment_type }}</td>
+                    <td style="font-size: 13px; font-weight: 600;">₹{{ "{:,.0f}".format(p.amount_paid) }}</td>
+                    <td style="font-size: 13px;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: {% if p.payment_status == 'Completed' %}rgba(16, 185, 129, 0.1){% else %}rgba(245, 158, 11, 0.1){% endif %}; color: {% if p.payment_status == 'Completed' %}var(--success){% else %}var(--warning){% endif %}; font-weight: 600;">
+                            {{ p.payment_status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if p.payment_status == 'Pending' %}
+                            <a href="{{ url_for('customer_pay', payment_id=p.payment_id) }}" class="btn" style="padding: 6px 12px; font-size: 12px;">Pay</a>
+                        {% else %}
+                            <span style="color: var(--text-muted); font-size: 12px;">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">No payment history yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

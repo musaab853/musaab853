@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="hero-card">
+    <h1>Welcome to K-SolarLimited</h1>
+    <p class="hero-subtitle">
+        Professional solar energy solutions for homes and businesses. Clean, reliable, and backed by expert support.
+    </p>
+
+    <div class="hero-cta">
+        <a href="{{ url_for('panels') }}" class="btn btn-secondary">Browse Products</a>
+        <a href="{{ url_for('customer_register') }}" class="btn btn-outline">Get Started</a>
+    </div>
+</div>
+
+<h2 style="margin-top: 40px;">Why Choose Us</h2>
+
+<div class="panel-grid" style="margin-bottom: 40px;">
+    <div class="card">
+        <h3>Expert Installation</h3>
+        <p>Professional in-house team ensures perfect installation with attention to detail and minimal disruption to your property.</p>
+    </div>
+    <div class="card">
+        <h3>Maximum Savings</h3>
+        <p>High-efficiency panels deliver 40-60% lower electricity bills. Custom designs optimized for your actual energy usage.</p>
+    </div>
+    <div class="card">
+        <h3>Long-Term Support</h3>
+        <p>25+ year warranty with priority maintenance and dedicated support. Your investment is protected for decades.</p>
+    </div>
+</div>
+
+<h2>Featured Solar Panels</h2>
+
+<div class="panel-grid">
+    {% for p in panels %}
+    <div class="panel-card">
+        <img src="{{ url_for('static', filename='images/panel' ~ loop.index ~ '.jpg') }}" alt="{{ p.model_name }}">
+        <div>
+            <h3>{{ p.model_name }}</h3>
+            <p class="panel-meta">{{ p.type }} • {{ p.capacity_kw }} kW</p>
+            <p class="panel-price">₹{{ "{:,.0f}".format(p.price) }}</p>
+            <a href="{{ url_for('customer_buy_panel', panel_id=p.panel_id) }}" class="btn" style="margin-top: auto; align-self: flex-start;">Learn More</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width: 600px; margin: 40px auto;">
+    <div class="card">
+        <h2 style="border: none; margin-bottom: 24px;">Add New Solar Panel</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <label>Panel Model Name</label>
+            <input type="text" name="model_name" required placeholder="e.g., SunPower 400W Monocrystalline">
+
+            <label>Panel Type</label>
+            <input type="text" name="type" required placeholder="e.g., Monocrystalline">
+
+            <label>Capacity (kW)</label>
+            <input type="number" step="0.1" name="capacity_kw" required placeholder="e.g., 0.4">
+
+            <label>Price (₹)</label>
+            <input type="number" step="0.01" name="price" required placeholder="e.g., 15000">
+
+            <label>Warranty Information</label>
+            <input type="text" name="warranty_info" placeholder="e.g., 25 years performance warranty">
+
+            <label>Panel Image</label>
+            <input type="file" name="panel_image" accept="image/*" required>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-secondary" style="flex: 1;">Add Panel</button>
+                <a href="{{ url_for('admin_panels') }}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+</div>
+{% endblock %}
