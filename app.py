@@ -72,18 +72,28 @@ def _get_pool():
         except ImportError:
             import importlib
             PooledDB = importlib.import_module('DBUtils.PooledDB').PooledDB
+
+        connect_kwargs = {
+            'host': app.config['MYSQL_HOST'],
+            'user': app.config['MYSQL_USER'],
+            'password': app.config['MYSQL_PASSWORD'],
+            'database': app.config['MYSQL_DB'],
+            'port': app.config.get('MYSQL_PORT', 3306),
+            'cursorclass': pymysql.cursors.DictCursor,
+            'autocommit': False,
+        }
+
+        # Enable SSL for cloud-hosted MySQL (non-localhost)
+        if app.config['MYSQL_HOST'] != 'localhost' and app.config['MYSQL_HOST'] != '127.0.0.1':
+            connect_kwargs['ssl'] = {'ssl': True}
+
         _pool = PooledDB(
             creator=pymysql,
-            maxconnections=10,
-            mincached=2,
-            maxcached=5,
+            maxconnections=5,
+            mincached=1,
+            maxcached=3,
             blocking=True,
-            host=app.config['MYSQL_HOST'],
-            user=app.config['MYSQL_USER'],
-            password=app.config['MYSQL_PASSWORD'],
-            database=app.config['MYSQL_DB'],
-            cursorclass=pymysql.cursors.DictCursor,
-            autocommit=False,
+            **connect_kwargs
         )
     return _pool
 
