@@ -5,6 +5,7 @@
     <a href="{{ url_for('admin_add_rental') }}" class="btn">Create Rental</a>
 </div>
 <div class="card">
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -24,8 +25,8 @@
             <td>{{ r.model_name }}</td>
             <td>{{ r.start_date or '-' }}</td>
             <td>{{ r.end_date or '-' }}</td>
-            <td>{{ r.monthly_rental_fee or '-' }}</td>
-            <td>{{ r.payment_status }}</td>
+            <td>{% if r.monthly_rental_fee %}₹{{ "{:,.0f}".format(r.monthly_rental_fee) }}{% else %}-{% endif %}</td>
+            <td><span class="badge {% if r.payment_status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">{{ r.payment_status }}</span></td>
 
                         <!-- ACTION column -->
             <td>
@@ -38,14 +39,14 @@
 
     {# 2) If billed this month, show status text instead of button #}
     {% elif r.billed_this_month > 0 %}
-        <span style="color: green; font-weight: bold;">✓ Invoiced (This Month)</span>
+        <span class="badge badge-success">✓ Invoiced (This Month)</span>
 
     {# 3) If not billed this month, show Generate Monthly Invoice #}
     {% else %}
         <form method="POST"
               action="{{ url_for('admin_generate_rental_invoice', rental_id=r.rental_id) }}"
               style="display:inline;">
-            <button type="submit" class="btn btn-green btn-sm">
+            <button type="submit" class="btn btn-secondary btn-sm">
                 Generate Monthly Invoice
             </button>
         </form>
@@ -54,5 +55,6 @@
         </tr>
         {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

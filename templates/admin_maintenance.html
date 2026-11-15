@@ -3,6 +3,7 @@
 <h2>Admin: Maintenance Jobs</h2>
 
 <div class="card">
+    <div class="table-wrap">
     <table>
         <tr>
     <th>ID</th>
@@ -25,8 +26,8 @@
     <td>{{ m.service_date }}</td>
     <td>{{ m.service_type }}</td>
     <td>{{ m.tech_name or 'Unassigned' }}</td>
-    <td>{{ m.maintenance_status }}</td>
-    <td>{{ m.cost_of_service }}</td>
+    <td><span class="badge {% if m.maintenance_status == 'Completed' %}badge-success{% else %}badge-warning{% endif %}">{{ m.maintenance_status }}</span></td>
+    <td>₹{{ "{:,.0f}".format(m.cost_of_service) if m.cost_of_service else '0' }}</td>
 
     <!-- PROOF column -->
     <td>
@@ -50,25 +51,25 @@
 
         {% elif m.maintenance_status != 'Completed' and m.technician_id %}
             {# Technician already assigned, waiting for them to complete #}
-            <span>Assigned</span>
+            <span class="badge badge-info">Assigned</span>
 
         {% elif m.maintenance_status == 'Completed' and m.billing_status == 'NotBilled' %}
             {# Completed but not billed yet -> Generate Invoice #}
             <form method="POST"
                   action="{{ url_for('admin_generate_maintenance_invoice', maintenance_id=m.maintenance_id) }}"
                   style="display:inline;">
-                <button type="submit" class="btn btn-green btn-sm">
+                <button type="submit" class="btn btn-secondary btn-sm">
                     Generate Invoice
                 </button>
             </form>
 
         {% elif m.maintenance_status == 'Completed' and m.billing_status == 'Invoiced' %}
             {# Invoice created, waiting for payment #}
-            <span>Awaiting Payment</span>
+            <span class="badge badge-warning">Awaiting Payment</span>
 
         {% elif m.maintenance_status == 'Completed' and m.billing_status == 'Paid' %}
             {# Invoice fully paid #}
-            <span>Paid</span>
+            <span class="badge badge-success">Paid</span>
 
         {% else %}
             <span>-</span>
@@ -77,5 +78,6 @@
 </tr>
 {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

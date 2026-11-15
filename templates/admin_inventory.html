@@ -5,6 +5,7 @@
     <a href="{{ url_for('admin_add_inventory') }}" class="btn">Add Item</a>
 </div>
 <div class="card">
+    <div class="table-wrap">
     <table>
   <tr>
     <th>Panel</th><th>Stock</th><th>Supplier</th><th>Cost/Unit</th><th>Reorder Level</th><th>Action</th>
@@ -12,9 +13,15 @@
   {% for i in inv %}
   <tr>
     <td>{{ i.model_name }}</td>
-    <td>{{ i.stock_quantity }}</td>
+    <td>
+        {% if i.stock_quantity <= i.reorder_level %}
+            <span class="badge badge-danger">{{ i.stock_quantity }} (Low)</span>
+        {% else %}
+            <span class="badge badge-success">{{ i.stock_quantity }}</span>
+        {% endif %}
+    </td>
     <td>{{ i.supplier_info }}</td>
-    <td>{{ i.cost_per_unit }}</td>
+    <td>₹{{ "{:,.0f}".format(i.cost_per_unit) if i.cost_per_unit else '0' }}</td>
     <td>{{ i.reorder_level }}</td>
     <td>
   <a class="btn btn-sm" href="{{ url_for('admin_manage_panel', panel_id=i.panel_id) }}">
@@ -24,5 +31,6 @@
   </tr>
   {% endfor %}
 </table>
+    </div>
 </div>
 {% endblock %}

@@ -12,6 +12,7 @@ def create_employee(name, email, role, phone, salary, work_schedule, plain_passw
             conn.commit()
             cur.close()
 
+# shortcut: hardcoded passwords, change before production deployment
 if __name__ == '__main__':
     create_employee('System Admin', 'admin@solar.com', 'Admin',
                     '111-111-1111', 80000, '9-5', 'admin123')

@@ -56,8 +56,8 @@ def auto_generate_rental_invoices():
                         """, (r['customer_id'], r['monthly_rental_fee'], ref_id))
                 conn.commit()
                 cur.close()
-        except:
-            pass
+        except Exception as e:
+            app.logger.error(f"Rental invoice generation failed: {e}")
         finally:
             LAST_INVOICE_CHECK = now
 
@@ -167,14 +167,18 @@ def customer_register():
         password = request.form['password']
         pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        with get_db() as conn:
-            cur = conn.cursor()
-            cur.execute("""
-                INSERT INTO Customer (name, email, phone, address, password_hash, service_start_date)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (name, email, phone, address, pw_hash, datetime.date.today()))
-            conn.commit()
-            cur.close()
+        try:
+            with get_db() as conn:
+                cur = conn.cursor()
+                cur.execute("""
+                    INSERT INTO Customer (name, email, phone, address, password_hash, service_start_date)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (name, email, phone, address, pw_hash, datetime.date.today()))
+                conn.commit()
+                cur.close()
+        except pymysql.IntegrityError:
+            flash('Email already registered. Please log in.', 'danger')
+            return redirect(url_for('customer_login'))
 
         flash('Registration successful. Please log in.', 'success')
         return redirect(url_for('customer_login'))
@@ -827,7 +831,7 @@ def admin_add_rental():
             return redirect(url_for('admin_rentals'))
 
         cur.close()
-    return render_template('admin_add_rental.html', customers=customers, panels=panels)
+    return render_template('admin_add_rentals.html', customers=customers, panels=panels)
 
 @app.route('/admin/sales')
 @employee_login_required
@@ -1440,4 +1444,5 @@ def customer_service_request():
     return render_template('customer_service_request.html', panels=panels)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)

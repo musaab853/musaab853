@@ -7,20 +7,25 @@
 <!-- Quick Stats -->
 <div class="stats-row">
     <div class="stat-card border-green">
-        <h3>{{ rentals|length }}</h3>
-        <p>Active Rentals</p>
+        <h3>Active Rentals</h3>
+        <p>{{ rentals|length }}</p>
         <small>Paying monthly</small>
     </div>
     <div class="stat-card border-orange">
-        <h3>{{ sales|length }}</h3>
-        <p>Purchases</p>
+        <h3>Purchases</h3>
+        <p>{{ sales|length }}</p>
         <small>Owned panels</small>
     </div>
     <div class="stat-card border-blue">
-        <h3>{{ maintenance|length }}</h3>
-        <p>Maintenance</p>
+        <h3>Maintenance</h3>
+        <p>{{ maintenance|length }}</p>
         <small>Service records</small>
     </div>
+</div>
+
+<div style="margin-bottom: 24px;">
+    <a href="{{ url_for('customer_service_request') }}" class="btn">🔧 Request Service</a>
+    <a href="{{ url_for('panels') }}" class="btn btn-outline" style="margin-left: 8px;">Browse Panels</a>
 </div>
 
 <!-- Active Rentals -->
@@ -121,6 +126,7 @@
 <div class="card">
     <h3>Payment History</h3>
     {% if payments %}
+        <div class="table-wrap">
         <table>
             <thead>
                 <tr>
@@ -138,7 +144,7 @@
                     <td style="font-size: 13px;">{{ p.payment_type }}</td>
                     <td style="font-size: 13px; font-weight: 600;">₹{{ "{:,.0f}".format(p.amount_paid) }}</td>
                     <td style="font-size: 13px;">
-                        <span style="padding: 4px 8px; border-radius: 4px; background: {% if p.payment_status == 'Completed' %}rgba(16, 185, 129, 0.1){% else %}rgba(245, 158, 11, 0.1){% endif %}; color: {% if p.payment_status == 'Completed' %}var(--success){% else %}var(--warning){% endif %}; font-weight: 600;">
+                        <span class="badge {% if p.payment_status == 'Completed' %}badge-success{% else %}badge-warning{% endif %}">
                             {{ p.payment_status }}
                         </span>
                     </td>
@@ -153,6 +159,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     {% else %}
         <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">No payment history yet.</p>
     {% endif %}

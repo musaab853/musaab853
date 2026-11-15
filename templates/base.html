@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-SolarLimited - Professional Solar Solutions</title>
+    <title>{% block title %}K-SolarLimited - Professional Solar Solutions{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -11,6 +11,7 @@
 <nav>
     <div class="logo">K-Solar</div>
 
+    <button class="hamburger" id="menuToggle">☰</button>
     <div class="nav-right">
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('panels') }}">Products</a>
@@ -43,6 +44,11 @@
     {% block content %}{% endblock %}
 </div>
 
+<footer style="text-align: center; padding: 30px 20px; margin-top: 60px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 13px;">
+    <p style="margin: 0;">© 2024 K-SolarLimited. All rights reserved.</p>
+    <p style="margin: 6px 0 0; font-size: 12px;">Professional Solar Energy Solutions</p>
+</footer>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const body = document.body;
@@ -62,6 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const isDark = body.classList.contains('dark');
             toggle.textContent = isDark ? '☀️' : '🌙';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    }
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navRight = document.querySelector('.nav-right');
+    if (menuToggle && navRight) {
+        menuToggle.addEventListener('click', function () {
+            navRight.classList.toggle('nav-open');
         });
     }
 });

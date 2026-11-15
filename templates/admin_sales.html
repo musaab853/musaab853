@@ -6,6 +6,7 @@
 </div>
 
 <div class="card">
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -25,8 +26,8 @@
     <td>{{ s.cname }}</td>
     <td>{{ s.model_name }}</td>
     <td>{{ s.sale_date }}</td>
-    <td>{{ s.total_price }}</td>
-    <td>{{ s.payment_status }}</td>
+    <td>₹{{ "{:,.0f}".format(s.total_price) if s.total_price else '-' }}</td>
+    <td><span class="badge {% if s.payment_status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">{{ s.payment_status }}</span></td>
 
     <!-- Invoice column -->
     <td>{{ s.invoice_number or '-' }}</td>
@@ -65,13 +66,13 @@
             <form method="POST"
                   action="{{ url_for('admin_mark_sale_paid', sale_id=s.sale_id) }}"
                   style="display:inline;">
-                <button type="submit" class="btn btn-green btn-sm">
+                <button type="submit" class="btn btn-secondary btn-sm">
                     Mark Paid
                 </button>
             </form>
 
         {% elif s.payment_status == 'Paid' %}
-            <span>Paid</span>
+            <span class="badge badge-success">Paid</span>
 
         {% else %}
             <span>-</span>
@@ -80,5 +81,6 @@
 </tr>
 {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

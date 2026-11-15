@@ -5,17 +5,23 @@
     <a href="{{ url_for('admin_add_payment') }}" class="btn">Record Payment</a>
 </div>
 <div class="card">
+    <div class="table-wrap">
     <table>
         <tr><th>Customer</th><th>Amount</th><th>Method</th><th>Type</th><th>Status</th></tr>
         {% for p in pay %}
         <tr>
             <td>{{ p.cname }}</td>
-            <td>{{ p.amount_paid }}</td>
+            <td style="font-weight: 600;">₹{{ "{:,.0f}".format(p.amount_paid) }}</td>
             <td>{{ p.payment_method }}</td>
             <td>{{ p.payment_type }}</td>
-            <td>{{ p.payment_status }}</td>
+            <td>
+                <span class="badge {% if p.payment_status == 'Completed' %}badge-success{% elif p.payment_status == 'Pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                    {{ p.payment_status }}
+                </span>
+            </td>
         </tr>
         {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

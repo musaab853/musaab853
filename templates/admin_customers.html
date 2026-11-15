@@ -3,6 +3,7 @@
 <h2>All Customers</h2>
 <a href="{{ url_for('admin_customers_page') }}">View Customers</a>
 <div class="card">
+    <div class="table-wrap">
     <table>
         <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>
         {% for c in customers %}
@@ -10,10 +11,11 @@
             <td>{{ c.customer_id }}</td>
             <td>{{ c.name }}</td>
             <td>{{ c.email }}</td>
-            <td>{{ c.phone }}</td>
-            <td>{{ c.rental_ownership_status }}</td>
+            <td>{{ c.phone or '-' }}</td>
+            <td><span class="badge badge-info">{{ c.rental_ownership_status }}</span></td>
         </tr>
         {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

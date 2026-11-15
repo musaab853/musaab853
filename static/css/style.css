@@ -410,6 +410,15 @@ tbody tr:hover {
     border-left-color: var(--danger);
 }
 
+body.dark .flash-success {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+}
+body.dark .flash-danger {
+    background-color: rgba(220, 38, 38, 0.15);
+    color: #fca5a5;
+}
+
 /* --- PANEL GRID & CARDS --- */
 .panel-grid {
     display: grid;
@@ -566,9 +575,69 @@ tbody tr:hover {
 .border-blue { border-left-color: var(--primary); }
 
 /* Responsive tweaks */
+.hamburger {
+    display: none;
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 10px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-lg);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.badge-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+.badge-info { background: rgba(30, 58, 95, 0.1); color: var(--primary); }
+
+body.dark .badge-success { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+body.dark .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+body.dark .badge-danger { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+body.dark .badge-info { background: rgba(30, 58, 95, 0.2); color: #93c5fd; }
+
+.hero-cta .btn-outline {
+    border-color: white;
+    color: white !important;
+    background: transparent;
+}
+.hero-cta .btn-outline:hover {
+    background: white;
+    color: var(--primary) !important;
+}
+
 @media (max-width: 768px) {
     h1 { font-size: 2.2rem; }
     .hero-card h1 { font-size: 2.5rem; }
     .stats-row { flex-direction: column; }
     nav { padding: 15px 20px; }
+    .hamburger { display: block; }
+    .nav-right {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--nav-bg);
+        border-bottom: 1px solid var(--border-color);
+        padding: 10px 20px;
+        box-shadow: var(--shadow-md);
+    }
+    .nav-right.nav-open { display: flex; }
+    nav a { margin-left: 0; padding: 8px 0; }
 }

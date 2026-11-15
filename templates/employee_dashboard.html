@@ -37,6 +37,7 @@
 <div class="card">
     <h3>New Sales Requests (Customer Orders - Buy)</h3>
     {% if sales_requests %}
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -52,12 +53,13 @@
             <td>{{ s.customer_name }}</td>
             <td>{{ s.model_name }}</td>
             <td>{{ s.sale_date }}</td>
-            <td>{{ s.total_price }}</td>
-            <td>{{ s.payment_status }}</td>
+            <td>₹{{ "{:,.0f}".format(s.total_price) if s.total_price else '-' }}</td>
+            <td><span class="badge {% if s.payment_status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">{{ s.payment_status }}</span></td>
         </tr>
         {% endfor %}
     </table>
-    <p><a href="{{ url_for('admin_sales') }}">Go to Sales Management</a></p>
+    </div>
+    <p style="margin-top: 15px;"><a href="{{ url_for('admin_sales') }}">Go to Sales Management</a></p>
     {% else %}
     <p>No new sales requests.</p>
     {% endif %}
@@ -66,6 +68,7 @@
 <div class="card">
     <h3>Rental Requests (New Installations - Rent)</h3>
     {% if rental_requests %}
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -80,13 +83,14 @@
             <td>{{ r.rental_id }}</td>
             <td>{{ r.customer_name }}</td>
             <td>{{ r.model_name }}</td>
-            <td>{{ r.start_date }}</td>
-            <td>{{ r.monthly_rental_fee }}</td>
-            <td>{{ r.payment_status }}</td>
+            <td>{{ r.start_date or '-' }}</td>
+            <td>{% if r.monthly_rental_fee %}₹{{ "{:,.0f}".format(r.monthly_rental_fee) }}{% else %}-{% endif %}</td>
+            <td><span class="badge {% if r.payment_status == 'Paid' %}badge-success{% else %}badge-warning{% endif %}">{{ r.payment_status }}</span></td>
         </tr>
         {% endfor %}
     </table>
-    <p><a href="{{ url_for('admin_rentals') }}">Go to Rentals Management</a></p>
+    </div>
+    <p style="margin-top: 15px;"><a href="{{ url_for('admin_rentals') }}">Go to Rentals Management</a></p>
     {% else %}
     <p>No rental requests.</p>
     {% endif %}
@@ -95,6 +99,7 @@
 <div class="card">
     <h3>Service / Maintenance Requests</h3>
     {% if service_requests %}
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -111,11 +116,12 @@
             <td>{{ m.model_name }}</td>
             <td>{{ m.service_date }}</td>
             <td>{{ m.service_type }}</td>
-            <td>{{ m.maintenance_status }}</td>
+            <td><span class="badge {% if m.maintenance_status == 'Completed' %}badge-success{% else %}badge-warning{% endif %}">{{ m.maintenance_status }}</span></td>
         </tr>
         {% endfor %}
     </table>
-    <p><a href="{{ url_for('admin_maintenance') }}">Go to Maintenance Management</a></p>
+    </div>
+    <p style="margin-top: 15px;"><a href="{{ url_for('admin_maintenance') }}">Go to Maintenance Management</a></p>
     {% else %}
     <p>No service requests.</p>
     {% endif %}
@@ -131,6 +137,7 @@
         {% endif %}
     </h3>
     {% if jobs %}
+    <div class="table-wrap">
     <table>
         <tr>
             <th>Date</th>
@@ -148,18 +155,19 @@
             {% if role == 'Technician' %}
                 <td>{{ j.customer_name }}<br><small>{{ j.address }}</small></td>
             {% endif %}
-            <td>{{ j.maintenance_status }}</td>
+            <td><span class="badge {% if j.maintenance_status == 'Completed' %}badge-success{% else %}badge-warning{% endif %}">{{ j.maintenance_status }}</span></td>
             {% if role == 'Technician' %}
             <td>
                 <a href="{{ url_for('complete_job', maintenance_id=j.maintenance_id) }}"
-   class="btn btn-green" style="padding: 5px 10px; font-size: 12px;">
-    Complete Job
-</a>
+                   class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">
+                    Complete Job
+                </a>
             </td>
             {% endif %}
         </tr>
         {% endfor %}
     </table>
+    </div>
     {% else %}
         <p>No active maintenance jobs.</p>
     {% endif %}

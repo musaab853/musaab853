@@ -7,6 +7,7 @@
 
 <div class="card">
     {% if employees %}
+    <div class="table-wrap">
     <table>
         <tr>
             <th>ID</th>
@@ -21,12 +22,13 @@
             <td>{{ e.employee_id }}</td>
             <td>{{ e.name }}</td>
             <td>{{ e.email }}</td>
-            <td>{{ e.phone }}</td>
-            <td>{{ e.salary }}</td>
-            <td>{{ e.work_schedule }}</td>
+            <td>{{ e.phone or '-' }}</td>
+            <td>₹{{ "{:,.0f}".format(e.salary) if e.salary else '-' }}</td>
+            <td>{{ e.work_schedule or '-' }}</td>
         </tr>
         {% endfor %}
     </table>
+    </div>
     {% else %}
         <p>No technicians found.</p>
     {% endif %}
